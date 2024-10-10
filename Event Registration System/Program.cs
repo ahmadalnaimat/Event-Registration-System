@@ -1,3 +1,8 @@
+using Event_Registration_System.Data;
+using Event_Registration_System.Servcies.Interface;
+using Event_Registration_System.Servcies;
+using Microsoft.EntityFrameworkCore;
+
 namespace Event_Registration_System
 {
     public class Program
@@ -5,9 +10,12 @@ namespace Event_Registration_System
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            string ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddScoped<IEmail, EmailService>();
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+            builder.Services.AddDbContext<EventContext>(options => options.UseSqlServer(ConnectionString));
 
             var app = builder.Build();
 
